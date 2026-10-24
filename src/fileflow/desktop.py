@@ -40,6 +40,8 @@ STYLE = """
 QWidget { background: #11151d; color: #e6ebf3; font-size: 14px; }
 QMainWindow { background: #11151d; }
 QFrame#sidebar { background: #171d28; border-right: 1px solid #2a3343; }
+QFrame#sidebar QLabel, QFrame#sidebar QCheckBox { background: transparent; }
+QLineEdit { font-family: monospace; font-size: 12px; }
 QLabel#brand { font-size: 26px; font-weight: 700; color: #f5f8fc; }
 QLabel#title { font-size: 27px; font-weight: 650; }
 QLabel#muted { color: #a3b0c3; font-size: 13px; }
@@ -195,7 +197,15 @@ class MainWindow(QMainWindow):
         main.addLayout(cards)
         self.tabs = QTabWidget()
         self.plan_table = self.table(["Current name", "Planned destination", "Size"])
+        for column in [0, 2]:
+            self.plan_table.horizontalHeader().setSectionResizeMode(
+                column, QHeaderView.ResizeMode.ResizeToContents
+            )
         self.duplicate_table = self.table(["Content group", "Copies", "Bytes each", "Files"])
+        for column in [0, 1, 2]:
+            self.duplicate_table.horizontalHeader().setSectionResizeMode(
+                column, QHeaderView.ResizeMode.ResizeToContents
+            )
         self.history_table = self.table(["Run ID", "State", "Files", "UTC timestamp"])
         self.skipped_table = self.table(["File", "Why it stays unchanged"])
         for title, widget in [
