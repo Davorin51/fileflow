@@ -1,0 +1,13 @@
+{
+  "group_by": "type",
+  "destination": "Organized",
+  "rename_template": "{index:03d}_{stem}{suffix}",
+  "recursive": false,
+  "include_hidden": false,
+  "categories": [
+    ["Documents", [".txt", ".md", ".pdf", ".docx"]],
+    ["Data", [".csv", ".xlsx", ".json"]],
+    ["Images", [".png", ".jpg", ".jpeg", ".webp"]],
+    ["Archives", [".zip", ".7z"]]
+  ]
+}
