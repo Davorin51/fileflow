@@ -289,8 +289,10 @@ class MainWindow(QMainWindow):
     def invalidate(self, *_):
         self.stop_watch()
         self.plan = None
-        self.plan_table.setRowCount(0)
-        self.numbers[0].setText("—")
+        for table in [self.plan_table, self.duplicate_table, self.skipped_table]:
+            table.setRowCount(0)
+        for label in self.numbers:
+            label.setText("—")
         self.status.setText("Rules changed. Create a fresh preview before applying.")
         self.update_buttons()
 
@@ -440,6 +442,10 @@ class MainWindow(QMainWindow):
             self.plan = None
             self.plan_table.setRowCount(0)
             self.numbers[0].setText("0")
+            for label in self.numbers[1:]:
+                label.setText("—")
+            self.duplicate_table.setRowCount(0)
+            self.skipped_table.setRowCount(0)
             self.show_history(history(self.folder))
             self.status.setText(
                 f"Applied run {run}. Review History to undo. No duplicate files were deleted."
@@ -465,6 +471,10 @@ class MainWindow(QMainWindow):
         def completed(run):
             self.plan = None
             self.plan_table.setRowCount(0)
+            self.duplicate_table.setRowCount(0)
+            self.skipped_table.setRowCount(0)
+            for label in self.numbers:
+                label.setText("—")
             self.show_history(history(self.folder))
             self.status.setText(
                 f"{verb} completed for run {run}. Create a new preview to continue."
@@ -492,7 +502,11 @@ class MainWindow(QMainWindow):
                     "Watching new stable files. Desktop mode creates previews only; Apply still requires confirmation."
                 )
 
-            settings = self.settings()
+            try:
+                settings = self.settings()
+            except FileFlowError as exc:
+                self.show_error(str(exc))
+                return
             self.run_task(lambda: Watcher(self.folder, settings), started)
 
     def watch_tick(self):
